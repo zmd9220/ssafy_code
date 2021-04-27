@@ -1,6 +1,6 @@
 from django.shortcuts import render, get_list_or_404, get_object_or_404
-from .models import Article
-from .serializers import ArticleListSerializer, ArticleSerializer
+from .models import Article, Comment
+from .serializers import ArticleListSerializer, ArticleSerializer, CommentSerializer
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
@@ -38,25 +38,86 @@ def articles(request):
         #     # 어디에서 에러났는지와 에러코드를 같이 보내줌 - 유효성 검사 실패
         #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
-@api_view(['GET', 'POST'])
+@api_view(['GET', 'DELETE', 'PUT'])
 def article_detail(request, pk):
+    # 3가지 기능에서 모두 사용되므로 맨 위에서 불러오기
+    article = get_object_or_404(Article, pk=pk)
     if request.method == 'GET':
-        article = get_object_or_404(Article, pk=pk)
         serializer = ArticleSerializer(article)
         return Response(serializer.data)
+
+    elif request.method == 'PUT':
+        # 시리얼라이저 = 해당 모델 시리얼라이저(수정할 데이터 인스턴스, 수정할 내용 데이터)
+        serializer = ArticleSerializer(article, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
     else: # Delete
         # 삭제는 시리얼라이저가 필요 X
-        article = get_object_or_404(Article, pk=pk)
         article.delete()
+        response = {'pk': pk}
+        return Response(response, status=status.HTTP_204_NO_CONTENT)
 
 
 # index 페이지 주세요!
 # article이 비었을 때 -> article이 없는 index.html 페이지가 응답 (빈 페이지)
 # get_list_or_404를 사용하면 데이터가 없을 때는 빈 페이지가 아닌 404 에러를 표시함 -> 구조상 이상하게 됨
-def index(request):
-    # articles = get_list_or_404(Article)
-    articles = Article.objects.all()
-    context = {
-        'articles': articles
-    }
-    return render(request, 'index.html', context)
+# def index(request):
+#     # articles = get_list_or_404(Article)
+#     articles = Article.objects.all()
+#     context = {
+#         'articles': articles
+#     }
+#     return render(request, 'index.html', context)
+
+
+@api_view(['GET'])
+def comments(request):
+    comment_list = get_list_or_404(Comment)
+    serializer = CommentSerializer(comment_list, many=True)
+    return Response(serializer.data)
+
+@api_view(['GET', 'PUT', 'DELETE'])
+def comment_detail(request, pk):
+    comment = get_object_or_404(comment, pk=pk)
+    if request.method == 'GET':
+        serializer = CommentSerializer(comment)
+        return Response(serializer.data)
+    
+    elif request.method == 'PUT':
+        serializer = CommentSerializer(comment, data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return Response(serializer.data)
+
+    else: # Delete
+        comment.delete()
+        response = {'pk': pk}
+        return Response(response, status=status.HTTP_204_NO_CONTENT)
+
+# 특정 게시글의 댓글 달기, 댓글 확인
+@api_view(['GET', 'POST'])
+def article_comments(request, article_pk):
+    article = get_object_or_404(Article, pk=article_pk)
+    if request.method == 'GET':
+        # 1:n 모델에서 n 측에서 역참조
+        # comment_list = get_list_or_404(Comment, article=article) # 이렇게 해도 됨   
+        comment_list = get_list_or_404(Comment.objects.order_by('-pk'), article=article)
+        # comment_list = article.comment_set.all()
+        serializer = CommentSerializer(comment_list, many=True)
+        return Response(serializer.data)
+    else: # POST
+        '''
+        request.data
+        {"content": "안녕하세요, 첫번째 댓글"} # article에 대한 정보가 없음
+        '''
+        serializer = CommentSerializer(data=request.data)
+        '''
+        is_valid에서 article을 검사하지 않도록
+        read_only_fields에 추가함
+        '''
+        if serializer.is_valid(raise_exception=True):
+            # article 필드에 대한 정보가 없으므로 같이 넣어서 저장
+            serializer.save(article=article)
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
