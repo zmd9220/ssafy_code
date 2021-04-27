@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %} 
+<h1>{{ article.pk }}.{{ article.title }}</h1>
+<hr>
+<p> {{ article.content }} </p>
+<hr>
+<p> {{ article.created_at }} </p>
+<a href="{% url 'articles:index' %}">목록으로</a>
+<a href="{% url 'articles:update' article.pk %}">수정하기</a>
+
+
+{% endblock content %}

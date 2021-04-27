@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>CREATE</h1>
+
+  <form action="" method="POST" enctype="multipart/form-data">
+    {% csrf_token %}
+    {% for field in form %}
+      {% if field.errors %}
+        {% for error in field.errors %}
+          <div class="alert alert-warning" role="alert"><strong>{{ error|escape }}</strong></div>
+        {% endfor %}
+      {% endif %}
+      {{ field.label_tag }}
+      {{ field }}
+    {% endfor %}
+    <input class="btn btn-primary" type="submit">
+  </form>
+
+  <a href="{% url 'articles:index' %}">[back]</a>
+{% endblock %}

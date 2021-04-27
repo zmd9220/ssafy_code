@@ -1,0 +1,13 @@
+
+{% extends 'base.html' %}
+{% comment %} base.html을 상속받아 사용 {% endcomment %}
+{% comment %} base.html 내에있는 block container 안에있는부분으로 {% endcomment %}
+  {% block container %}
+  <p> {{ students }}</p>
+  <ol>
+  {% for student in students %}
+    <li>{{ student}}</li>
+  {% endfor %}
+  </ol>
+  {% endblock container %}
+

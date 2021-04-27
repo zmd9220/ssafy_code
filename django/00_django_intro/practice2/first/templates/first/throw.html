@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block container %}
+  <h1>First's Throw Form</h1>
+  <form action="{% url 'first:catch' %}" method="get">
+    <label for="name">이름 :</label>
+    <input type="text" id="name" name="name" required>
+    <label for="age">나이 :</label>
+    <input type="text" name="age" id="age">
+    <button>등록</button>
+  </form>
+{% endblock container %}
+

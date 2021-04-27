@@ -1,0 +1,12 @@
+
+{% extends 'base.html' %}
+
+{% block content %} 
+
+<h2>제목: {{ article.title }}</h2>
+<h3>내용</h3>
+<p> {{ article.content }} </p>
+
+<a href="{% url 'articles:edit' article.pk  %}">✏</a>
+<a href="">🗑</a>
+{% endblock content %}

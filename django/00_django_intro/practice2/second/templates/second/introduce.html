@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block container %}
+  <h1>Second's introduce(variable routing)</h1>
+  
+  <p>안녕하세요! 내 이름은 {{ name }}, {{ age }}살 입니다.</p>
+
+  <a href="{% url 'first:throw' %}">first's throw로 가기</a>
+{% endblock container %}
+
+
+

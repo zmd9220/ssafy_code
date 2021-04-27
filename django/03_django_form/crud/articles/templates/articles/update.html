@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Edit</h1>
+
+{% comment %} <form action="{% url 'articles:update' article.pk %}" method="post"> {% endcomment %}
+<form method="post">
+  {% csrf_token %}
+  {% comment %} as_p = 각 항목을 p태그로 감싸서 {% endcomment %}
+  {% comment %} as_ul = 각 항목을 li태그로 감싸서 {% endcomment %}
+  {{ form.as_p }}
+
+  <button>수정</button> 
+</form>
+
+<a href="{% url 'articles:index' %}">목록으로</a>
+{% endblock content %}

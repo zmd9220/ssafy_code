@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{  article.title }}</h1>
+  <p>{{ article.created_at }}</p>
+  <hr>
+  <p>{{ article.content }}</p>
+
+  <a href="{% url 'articles:index' %}">목록으로</a>
+  {% comment %} action으로 요청을 보낸다. 아직 자바스크립트를 모르므로 form으로만 요청을 보낼 수 있음 {% endcomment %}
+  <form action="{% url 'articles:delete' article.pk %}">
+    {% csrf_token %}
+    <button>삭제하기</button>
+  </form>
+  {% comment %} <a href="{% url 'articles:delete' article.pk %}">삭제하기</a> {% endcomment %}
+  <a href="{% url 'articles:edit' article.pk %}">수정하기</a>
+{% endblock content %}

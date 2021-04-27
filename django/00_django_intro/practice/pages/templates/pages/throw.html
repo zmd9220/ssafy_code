@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block container %}
+  <h1>Throw!</h1>
+
+  <h2>{% url 'pages:catch' %}</h2>
+  <form action="{% url 'pages:catch' %}" method="get">
+    <input type="text" name="content">
+    <button>던지기</button>
+  </form>  
+{% endblock container %}
+

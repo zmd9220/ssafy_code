@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+
+{% block container %}
+  <h1>Catch!</h1>
+  <p>Content: {{ content }}</p>
+
+  <a href="{% url 'pages:throw' %}">다시 던지기</a>
+{% endblock container %}

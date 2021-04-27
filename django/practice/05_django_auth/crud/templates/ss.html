@@ -1,0 +1,11 @@
+            {% comment %} <form action="{% url 'accounts:logout' %}" method="post">
+              <button class="btn btn-warning">Logout</button>
+            </form> {% endcomment %}
+            {% comment %} <li class="nav-item mx-1">
+              <a class="nav-link active" aria-current="page" href="#">Home</a>
+            </li>               {% endcomment %}
+            {% comment %} <li class="nav-item mx-1">
+              <form action="{% url 'accounts:update' %}" class="nav-link" method="post">
+                {% csrf_token %}
+                <button class="btn btn-secondary">회원 수정</button>
+              </form> {% endcomment %}

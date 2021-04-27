@@ -1,0 +1,12 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1 class="text-primary">회원 관리 페이지</h1>
+  <br>
+  {% for user in users %}
+    <p> 회원번호: {{ user.pk }}번, ID: {{ user.username }} </p>
+    <hr>
+  {% empty %}
+    <p class="text-warning">생성된 아이디가 없습니다.</p>
+  {% endfor %}
+{% endblock content %}

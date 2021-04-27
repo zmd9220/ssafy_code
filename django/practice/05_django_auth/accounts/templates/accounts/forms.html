@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+{% block content %}
+  {% if request.resolver_match.url_name == 'signup' %}
+    <h2 class="text-info">회원 가입 페이지 입니다.</h2>
+  {% elif request.resolver_match.url_name == 'login' %}
+    <h2 class="text-info">로그인 페이지 입니다.</h2>
+  {% else %}
+    <h2 class="text-info">회원 정보 수정 페이지 입니다.</h2>
+  {% endif %}
+  <form action="" method="post">
+    {% csrf_token %}
+    {% comment %} {{ form.as_p }} {% endcomment %}
+    {% bootstrap_form form %}
+    <input class="btn btn-primary" type="submit" value="Submit">
+  </form>
+{% endblock content %}
