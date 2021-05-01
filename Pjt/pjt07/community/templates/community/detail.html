@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% load bootstrap5 %}
+
+{% block content %}
+  <h1>DETAIL PAGE</h1>
+  <hr>
+  <p>작성자 : <a href="{% url 'accounts:profile' review.user.username %}">{{ review.user }}</a></p>
+  <p>{{ review.title }}</p>
+  <p>{{ review.movie_title }}</p>
+  <p>{{ review.content }}</p>
+  <p>{{ review.rank }}</p>
+  <p>{{ review.created_at }}</p>
+  <p>{{ review.updated_at }}</p>
+  <hr>
+    {% if request.user.is_authenticated %}
+      <form action="{% url 'community:like' review.pk %}" method='POST'>
+        {% csrf_token %}
+        {% if request.user in review.like_users.all %}
+          <button style="border:None; background-color:transparent; color:red;"><i class="fas fa-heart"></i></button>        
+        {% else %}
+          <button style="border:None; background-color:transparent;"><i class="far fa-heart"></i></button>
+        {% endif %}
+      </form>
+      <p>{{ review.like_users.all|length }}개의 좋아요가 있습니다.</p>
+    {% endif %}
+
+  <hr>
+  <h4>댓글 목록</h4>
+  <p>{{ comments|length }}개의 댓글이 있습니다.</p>
+  <ul>
+    {% for comment in comments %}
+      <li>{{ comment.content }}</li>
+    {% empty %}
+      <p>아직 댓글이 없네요...</p>
+    {% endfor %}
+  </ul>
+  <hr>
+  <form action="{% url 'community:comments_create' review.pk %}" method="POST">
+    {% csrf_token %}
+    {% bootstrap_form comment_form %}
+    <input type="submit">
+  </form>
+  <a href="{% url 'community:index' %}">BACK</a>
+{% endblock %}

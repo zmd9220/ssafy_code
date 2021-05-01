@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <div class="row row-cols-1 row-cols-md-3 g-4">
+    {% for movie in movies %}
+    <div class="col">
+      <div class="card h-100">
+        <img src="{{movie.poster_path}}" class="card-img-top" alt="{{movie.title}}">
+        <div class="card-body">
+          <a class="card-title" href="{% url 'movies:detail' movie.pk %}">{{movie.title}}</a>
+          <p class="card-text">{{movie.overview}}</p>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+{% endblock content %}

@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>{{ person.username }}의 프로필</h1>
+  {% with followings=person.followings.all followers=person.followers.all %}
+    {% if request.user.is_authenticated %}    
+      {% if request.user != person %}
+        <form action="{% url 'accounts:follow' person.pk %}" method="post">
+          {% csrf_token %}
+          {% if request.user in followers %}
+            <button>UnFollow</button>
+          {% else %}
+            <button>Follow</button>
+          {% endif %}
+        </form>
+      {% endif %}
+      following: {{ followings|length }}
+      follower: {{ followers|length }}
+    {% endif %}
+  {% endwith %}
+{% endblock content %}
+

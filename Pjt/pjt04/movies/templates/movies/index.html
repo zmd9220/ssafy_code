@@ -1,0 +1,23 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>SSAFY Movie forum</h1>
+ 
+  <a href="{% url 'movies:new' %}">새로 생성하기</a>
+  <hr>
+  {% comment %} 전체틀을 그리드로 잡아주고 {% endcomment %}
+  <div class="row">
+    {% for movie in movies %}
+    {% comment %} 각 뮤비 카드 마다 col을 지정해줘서 12초과시 다음줄 = 3개 나오고 다음줄로 배치 {% endcomment %}
+      <div class="col-4 p-1">
+        <div class="card" style="width: 18rem;">
+          <img src="{{ movie.poster_path }}" class="card-img-top" alt="{{ movie.title }}">
+          <div class="card-body">
+            <a href="{% url 'movies:detail' movie.pk %}">{{ movie.title }}</a>
+          </div>
+        </div>
+      </div>
+    {% endfor %}
+  </div>
+
+{% endblock content %}

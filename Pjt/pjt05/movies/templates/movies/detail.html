@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>movie number : {{movie.pk}}</h1>
+  <h2>movie title : {{movie.title}}</h2>
+  <img src="{{movie.poster_path}}" alt="{{movie.title}}">
+  <hr>
+  <p>content : {{movie.overview}}</p>
+  <hr>
+
+  <a class='btn btn-primary' href="{% url 'movies:update' movie.pk %}">EDIT</a>
+  {% comment %} <a class='btn btn-danger' href="{% url 'movies:delete' movie.pk %}">DELETE</a> {% endcomment %}
+  <form action="{% url 'movies:delete' movie.pk %}" method="post">
+    {% csrf_token %}
+    <button class="btn btn-danger">DELETE</button>
+  </form>
+  <br>
+  <a class='btn btn-warning' href="{% url 'movies:index' %}">Main page</a>
+
+{% endblock content %}

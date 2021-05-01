@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>EDIT Page</h1>
+    {% comment %} {{ request.resolver_match }} {% endcomment %}
+  <form action="" method="POST">
+    {% csrf_token %}
+    {{form.as_p}}
+    <button class="btn btn-primary">EDIT</button>
+  </form>
+  <hr>
+  <a href="{% url 'movies:detail' movie.pk %}">Detail</a>
+  <a href="{% url 'movies:index' %}">Index</a>
+
+{% endblock content %}

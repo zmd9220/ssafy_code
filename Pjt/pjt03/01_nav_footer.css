@@ -1,0 +1,10 @@
+/* 01_nav_footer.css */
+/* 아래에 코드를 작성해 주세요. */
+
+nav {
+  height: 80px;
+}
+
+a > img {
+  height: 80px;
+}

@@ -1,0 +1,11 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>전체 목록 페이지</h1>
+  {% for review in reviews %}
+    <p>글 번호 : {{ review.pk }} </p>
+    <p>글 제목 : {{ review.title }} </p>
+    <a href="{% url 'community:detail' review.pk %}">Detail</a>
+    <hr>
+  {% endfor %}
+{% endblock content %}

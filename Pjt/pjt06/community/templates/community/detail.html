@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h2>{{ review.pk }}번 글</h2>  
+  <hr>
+  <p>Title : {{ review.title }}</p>
+  <p>Movie_Title : {{ review.movie_title }}</p>
+  <p>Content : {{ review.content }}</p>
+  <p>Rank : {{ review.rank }}</p>
+  <hr>
+  <p>생성 시간 : {{ review.created_at }}</p>
+  <p>수정 시간 : {{ review.updated_at }}</p>
+  <hr>
+  <ul>
+    {% for comment in comments %}
+      <li>
+        {{ comment.content }}
+      </li>
+    {% empty %}
+      <p>댓글이 없습니다.</p>
+    {% endfor %}
+  </ul>
+  <form action="{% url 'community:comments_create' review.pk %}" method="post">
+    {% csrf_token %}
+    {{ comment_form.as_p }}
+    <button>댓글 달기</button>
+  </form>
+  <hr>
+  <a href="{% url 'community:index' %}">Index</a>
+{% endblock content %}
