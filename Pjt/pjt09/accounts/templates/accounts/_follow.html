@@ -1,0 +1,67 @@
+<div class="jumbotron text-center text-white bg-dark">
+  <p class="lead mb-1">작성자 정보</p>
+  <h1 class="display-4">{{ person.username }}</h1>
+  <hr>
+  {% with followings=person.followings.all followers=person.followers.all %}
+    <p class="lead">
+      팔로잉 : <span id="following-cnt-{{ person.pk }}">{{ followings|length }}</span>
+       / 팔로워 : <span id="follower-cnt-{{ person.pk }}">{{ followers|length }}</span>
+    </p>
+    <!-- 팔로우 버튼 -->
+    {% if request.user != person %}
+      <!-- js로 처리할 것이기 때문에, form에 url이 포함될 필요가 없다. 
+        data-userpk를 통해, 속성에 사용자 pk를 저장할 수 있다.
+      -->
+      <form class="follow-form" data-user="{{ user.username }}" data-userpk="{{ person.pk }}">
+        {% csrf_token %}
+        <button id="follow-button-{{ person.pk }}">
+          {% if request.user in followers %}
+            Unfollow
+          {% else %}
+            Follow
+          {% endif %}
+        </button>
+      </form>
+    {% endif %}
+  {% endwith %}
+
+  <script>
+    form = document.querySelector('.follow-form')
+    // csrf토큰을 별도로 저장해야 한다. 이름은 csrfmiddlewaretoken이다.
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    form.addEventListener('submit', function (event) {
+      event.preventDefault()
+
+      const userpk = event.target.dataset.userpk
+      const user = event.target.dataset.user
+      axios({
+        url: `/accounts/follow/${ userpk }/`,
+        method: 'POST',
+        headers: {
+          'X-CSRFToken' : csrfToken,
+        },
+      }).then((response) => {
+        const { follow, fiCnt, fwCnt } = response.data
+        const followBtn = document.querySelector(`#follow-button-${ userpk }`)
+      
+        followBtn.innerText = follow ? '팔로우 취소' : '팔로우'
+        const followingCnt = document.querySelector(`#following-cnt-${ userpk }`)
+        const followerCnt = document.querySelector(`#follower-cnt-${ userpk }`)
+        followingCnt.innerText = fiCnt
+        followerCnt.innerText = fwCnt
+      }).catch((error) => {
+        switch(error.response.status) {
+          case 401: {
+            location.href = `/accounts/login/`
+            break
+          }
+          default: {
+            alert(error)
+          }
+        }
+      })
+    })
+  </script>
+</div>
+
+

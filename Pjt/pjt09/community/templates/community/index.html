@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Community</h1>
+  {% if user.is_authenticated %}
+    <a href="{% url 'community:create' %}">NEW</a>
+  {% else %}
+    <a href="{% url 'accounts:login' %}">[새 글을 작성하려면 로그인하세요]</a>
+  {% endif %}
+  <hr>
+  {% for review in reviews %}
+    <p><b>작성자 : <a href="{% url 'accounts:profile' review.user.username %}">{{ review.user }}</a></b></p>
+    <p>글 번호: {{ review.pk }}</p>
+    <p>글 제목: {{ review.title }}</p>
+    <p>글 내용: {{ review.content }}</p>
+    <form class="like-form" data-review-id="{{ review.pk }}" class="d-inline">
+      {% csrf_token %}
+      {% if user in review.like_users.all %}
+        <button id="like-btn-{{ review.pk }}" class="btn btn-link">
+          <i id="like-icon-{{ review.pk }}" class="fas fa-heart fa-lg" style="color:crimson;"></i>
+        </button>
+      {% else %}
+        <button id="like-btn-{{ review.pk }}" class="btn btn-link">
+          <i id="like-icon-{{ review.pk }}" class="fas fa-heart fa-lg" style="color:black;"></i>
+        </button>
+      {% endif %}
+    </form>
+    <span id="like-count-{{ review.pk }}">{{ review.like_users.all|length }}</span> 명이 이 글을 좋아합니다.<br>
+    <a href="{% url 'community:detail' review.pk %}">[detail]</a>
+    <hr>
+  {% endfor %}
+  <script>
+    const forms = document.querySelectorAll('.like-form')
+    const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value
+    forms.forEach(form => {
+
+      form.addEventListener('submit', event => {
+        event.preventDefault()
+        const reviewId = event.target.dataset.reviewId
+
+        // 새롭게 config 방법으로 post를 보낼 것 axios(config)
+        // https://github.com/axios/axios#request-config
+        axios({
+          url: `/community/${reviewId}/like/`,
+          method: 'post',
+          headers: {
+            'X-CSRFToken': csrfToken,
+          },
+        }).then( function (response) {
+          console.log(response.data)
+          const { liked, count } = response.data
+          // 내가 좋아요를 눌렀는지 여부
+          const likeIcon = document.querySelector(`#like-icon-${reviewId}`)
+          likeIcon.style.color = liked ? 'crimson' : 'black'
+          // 몇 명이 좋아하는지
+          const likeCount = document.querySelector(`#like-count-${reviewId}`)
+          likeCount.innerText = count
+        }).catch( function (error) {
+          console.log(error.response)
+          switch (error.response.status) {
+            case 401: {
+              // 로그인 페이지로 보내준다.
+              location.href = '/accounts/login/'
+              break
+            }
+            default: {
+              // 위에서 처리하지 않은 모든 에러 메세지를 경고창으로 표시한다.
+              alert('알 수 없는 에러가 발생했습니다. 관리자를 통해 문의해주세요.')
+            }
+          }
+
+        })
+         
+      })
+    })
+  </script>
+
+{% endblock %}
